@@ -13,15 +13,15 @@
     
     
 <!-- Login page -->
-    <div id="username-page">
-        <div class="username-page-container">
+    <div id="username-page" class="text-center">
+        <div class="username-page-container container">
             <h1 class="title">Type your username</h1>
             <form id="usernameForm" name="usernameForm">
                 <div class="form-group">
                     <input type="text" id="name" placeholder="Username" autocomplete="off" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <button type="button" class="accent username-submit" onclick="login()">Start Chatting</button>
+                    <button type="button" class="btn btn-default username-submit" onclick="login()">Start Chatting</button>
                 </div>
             </form>
         </div>
@@ -31,7 +31,7 @@
 
 <!-- Room Selection Page -->
 	<div id="room-selection-page">
-		<div class="room-selection-page-container">
+		<div class="room-selection-page-container container">
 			<button onclick="selectRoom(1)">Room 1</button>
 			<button onclick="selectRoom(2)">Room 2</button>
 		</div>
@@ -43,7 +43,7 @@
 <!-- Chat Page -->
 
     <div id="chat-page">
-        <div class="chat-container">
+        <div class="chat-container container">
             <div class="chat-header">
                 <h2>Spring WebSocket Chat Demo</h2>
             </div>
@@ -57,7 +57,7 @@
                 <div class="form-group">
                     <div class="input-group clearfix">
                         <input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
-                        <button type="button" class="primary" onclick="sendMessage()">Send</button>
+                        <button type="button" class="btn btn-primary" onclick="sendMessage()">Send</button>
                     </div>
                 </div>
             </form>

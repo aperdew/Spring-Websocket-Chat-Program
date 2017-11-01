@@ -98,34 +98,26 @@ function onMessageReceived(payload) {
     var messageElement = document.createElement('li');
 
     if(message.type === 'JOIN') {
-        messageElement.classList.add('event-message');
-        message.content = message.sender + ' joined!';
+    	message.content = message.sender + ' joined!';
+    	messageArea.append(`
+    		<li class="event-message text-center ChatPage--EventMessageContainer">
+    			<p class="ChatPage--EventMessage">${message.content}</p>
+    		</li>`);        
     } else if (message.type === 'LEAVE') {
-        messageElement.classList.add('event-message');
-        message.content = message.sender + ' left!';
+    	message.content = message.sender + ' left!';
+    	messageArea.append(`
+    		<li class=" event-message text-center ChatPage--EventMessageContainer">
+    			<p class="ChatPage--EventMessage">${message.content}</p>
+    		</li>`);
     } else {
-        messageElement.classList.add('chat-message');
-
-        var avatarElement = document.createElement('i');
-        var avatarText = document.createTextNode(message.sender[0]);
-        avatarElement.append(avatarText);
-        avatarElement.style['background-color'] = getAvatarColor(message.sender);
-
-        messageElement.append(avatarElement);
-
-        var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode(message.sender);
-        usernameElement.append(usernameText);
-        messageElement.append(usernameElement);
+    	var backgroundColor = getAvatarColor(message.sender);
+    	messageArea.append(`
+    			<li class="chat-message ChatPage--MessageContainer">
+    				<i style="background-color: ${backgroundColor}" class="ChatPage--AvatarIcon">${message.sender[0]}</i>
+    				<span class="ChatPage--Username">${message.sender}</span>
+    				<p class="ChatPage--Message">${message.content}</p>
+    			</li>`);
     }
-
-    var textElement = document.createElement('p');
-    var messageText = document.createTextNode(message.content);
-    textElement.append(messageText);
-
-    messageElement.appendChild(textElement);
-
-    messageArea.append(messageElement);
     messageArea.scrollTop = messageArea.scrollHeight;
 }
 
@@ -139,5 +131,11 @@ function getAvatarColor(messageSender) {
     var index = Math.abs(hash % colors.length);
     return colors[index];
 }
+
+$("form").bind("keypress", function(e) {
+	   if (e.keyCode == 13) {
+	     return false;
+	   }
+	});
 
 
