@@ -16,14 +16,12 @@
     <div id="username-page" class="text-center">
         <div class="username-page-container container">
             <h1 class="title">Type your username</h1>
-            <form id="usernameForm" name="usernameForm">
-                <div class="form-group">
-                    <input type="text" id="name" placeholder="Username" autocomplete="off" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <button type="button" class="btn btn-default username-submit" onclick="login()">Start Chatting</button>
-                </div>
-            </form>
+            <div class="form-group">
+                <input type="text" id="name" placeholder="Username" autocomplete="off" class="form-control" />
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-default username-submit" onclick="login()">Start Chatting</button>
+            </div>
         </div>
     </div>    
 <!-- End of Login page -->
@@ -32,8 +30,10 @@
 <!-- Room Selection Page -->
 	<div id="room-selection-page">
 		<div class="room-selection-page-container container">
-			<button onclick="selectRoom(1)">Room 1</button>
-			<button onclick="selectRoom(2)">Room 2</button>
+			<div class="roomList">				
+				<button class="btn btn-default" onclick="selectRoom(1)">Room 1</button>
+				<button class="btn btn-default" onclick="selectRoom(2)">Room 2</button>
+			</div>
 		</div>
 	
 	</div>
@@ -44,23 +44,36 @@
 
     <div id="chat-page">
         <div class="chat-container container">
-            <div class="chat-header">
-                <h2>Spring WebSocket Chat Demo</h2>
+        	<div class="chat-panel panel panel-default ">
+	            <div class="panel-heading">
+	            	<div class="row">
+	            		<div class="col-sm-12">
+	            			<div class="text-center chat-header">Spring WebSocket Chat Demo</div>
+	            			<button class="backToRoomButton btn btn-default" onclick="backToRoomSelection()">
+			                	<span class="glyphicon glyphicon-circle-arrow-right"></span>
+			                </button>
+	            		</div>
+	            	</div>    
+	            </div>
+	            <div class="chat-panel-body">
+		            <div class="connecting">
+		                Connecting...
+		            </div>
+		            <ul id="messageArea">
+		
+		            </ul>
+	            </div>
+	            <div class="chat-panel-footer panel-footer">
+		            <div id="messageForm">
+		               <div class="input-group">
+		                   	<input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
+		                   	<span class="input-group-btn">
+		               			<button type="button" class="btn btn-primary" onclick="sendMessage()">Send</button>
+		         			</span>
+		               </div>
+		            </div>
+	            </div>
             </div>
-            <div class="connecting">
-                Connecting...
-            </div>
-            <ul id="messageArea">
-
-            </ul>
-            <form id="messageForm" name="messageForm" nameForm="messageForm">
-                <div class="form-group">
-                    <div class="input-group clearfix">
-                        <input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
-                        <button type="button" class="btn btn-primary" onclick="sendMessage()">Send</button>
-                    </div>
-                </div>
-            </form>
         </div>
     </div>
 <!-- End of Chat Page -->

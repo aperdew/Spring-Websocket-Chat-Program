@@ -12,6 +12,7 @@ var connectingElement = $('.connecting');
 var stompClient = null;
 var username = null;
 var roomId =-1;
+var socket =null;
 
 var colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -20,6 +21,9 @@ var colors = [
 
 roomSelectionPage.hide();
 chatPage.hide();
+
+chatPage.css("height",$(window).height());
+roomSelectionPage.css("height",$(window).height());
 
 function login(event) {
     username = $("#name").val().trim();
@@ -41,11 +45,20 @@ function selectRoom(roomNumber){
 	connect();
 }
 
+function backToRoomSelection(){
+	stompClient.disconnect();
+	messageArea.empty();
+	messageInput.val("");
+	roomId=-1;
+	chatPage.hide();
+	roomSelectionPage.show()
+}
+
 function connect(event){
 	//roomId = roomNumber;
 	if(roomId != -1){
 		console.log("before connect["+roomId+"]");
-		var socket = new SockJS('/ws');
+		socket = new SockJS('/ws');
 	    stompClient = Stomp.over(socket);
 
 	    stompClient.connect({}, onConnected, onError);
@@ -88,7 +101,6 @@ function sendMessage(event) {
         stompClient.send("/app/chat.sendMessage/"+roomId, {}, JSON.stringify(chatMessage));
         messageInput.val("");
     }
-    event.preventDefault();
 }
 
 
@@ -100,13 +112,13 @@ function onMessageReceived(payload) {
     if(message.type === 'JOIN') {
     	message.content = message.sender + ' joined!';
     	messageArea.append(`
-    		<li class="event-message text-center ChatPage--EventMessageContainer">
+    		<li class="text-center ChatPage--EventMessageContainer">
     			<p class="ChatPage--EventMessage">${message.content}</p>
     		</li>`);        
     } else if (message.type === 'LEAVE') {
     	message.content = message.sender + ' left!';
     	messageArea.append(`
-    		<li class=" event-message text-center ChatPage--EventMessageContainer">
+    		<li class="text-center ChatPage--EventMessageContainer">
     			<p class="ChatPage--EventMessage">${message.content}</p>
     		</li>`);
     } else {
@@ -118,7 +130,8 @@ function onMessageReceived(payload) {
     				<p class="ChatPage--Message">${message.content}</p>
     			</li>`);
     }
-    messageArea.scrollTop = messageArea.scrollHeight;
+    
+    $('#messageArea')[0].scrollTop = $('#messageArea')[0].scrollHeight;
 }
 
 
@@ -132,10 +145,19 @@ function getAvatarColor(messageSender) {
     return colors[index];
 }
 
+$("#messageForm").bind("keypress", function(e) {
+	   if (e.keyCode == 13) {
+		   sendMessage();
+		   return false;
+	   }
+});
+
 $("form").bind("keypress", function(e) {
 	   if (e.keyCode == 13) {
 	     return false;
 	   }
-	});
+});
+
+
 
 
