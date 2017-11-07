@@ -19,6 +19,10 @@ var colors = [
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
 
+var roomList=[];
+var currentRoom={};
+var currentRoomIndex;
+
 roomSelectionPage.hide();
 chatPage.hide();
 
@@ -33,25 +37,43 @@ function login(event) {
 
         usernamePage.hide();
         roomSelectionPage.show();
+        getChatRooms();
 
         
     }
 }
 
 function selectRoom(roomNumber){
-	roomId = roomNumber;	
+	currentRoomIndex=getRoomIndex(roomNumber)
+	currentRoom=roomList[currentRoomIndex];
+	console.log("connecting to roomIndex: "+currentRoomIndex);
+	roomId = currentRoom.id;	
 	roomSelectionPage.hide();
-	chatPage.show();
-	connect();
+	$(".chat-header").text(currentRoom.topic);
+	$.ajax({
+		type:"GET",
+		url:"GetMessages/"+currentRoomIndex,
+	}).then(function(data){
+		data.forEach(function(message){
+			processMessage(message);
+		});
+		chatPage.show();
+		connect();
+	});	
 }
 
 function backToRoomSelection(){
+	 stompClient.send("/app/chat.addUser/"+roomId+"/"+currentRoomIndex,
+		        {},
+		        JSON.stringify({sender: username, type: 'LEAVE'})
+		    )
 	stompClient.disconnect();
 	messageArea.empty();
 	messageInput.val("");
 	roomId=-1;
 	chatPage.hide();
 	roomSelectionPage.show()
+	getChatRooms();
 }
 
 function connect(event){
@@ -63,8 +85,6 @@ function connect(event){
 
 	    stompClient.connect({}, onConnected, onError);
 	}
-	
-    event.preventDefault();
 }
 
 
@@ -72,9 +92,8 @@ function onConnected() {
 	console.log("["+roomId+"]");
     // Subscribe to the Public Channel
     stompClient.subscribe('/channel/'+roomId, onMessageReceived);
-
     // Tell your username to the server
-    stompClient.send("/app/chat.addUser/"+roomId,
+    stompClient.send("/app/chat.addUser/"+roomId+"/"+currentRoomIndex,
         {},
         JSON.stringify({sender: username, type: 'JOIN'})
     )
@@ -93,22 +112,28 @@ function sendMessage(event) {
     var messageContent = messageInput.val().trim();
 
     if(messageContent && stompClient) {
+    	var date = new Date();
+    	var currentTime = date.toLocaleTimeString();
         var chatMessage = {
             sender: username,
             content: messageInput.val(),
-            type: 'CHAT'
+            type: 'CHAT',
+            time: currentTime
+            
         };
-        stompClient.send("/app/chat.sendMessage/"+roomId, {}, JSON.stringify(chatMessage));
+        stompClient.send("/app/chat.sendMessage/"+roomId+"/"+currentRoomIndex, {}, JSON.stringify(chatMessage));
         messageInput.val("");
     }
 }
 
 
 function onMessageReceived(payload) {
-    var message = JSON.parse(payload.body);
-    
-    var messageElement = document.createElement('li');
+    var message = JSON.parse(payload.body);  
+    processMessage(message);
+}
 
+function processMessage(message){
+	var messageElement = document.createElement('li');
     if(message.type === 'JOIN') {
     	message.content = message.sender + ' joined!';
     	messageArea.append(`
@@ -126,14 +151,48 @@ function onMessageReceived(payload) {
     	messageArea.append(`
     			<li class="chat-message ChatPage--MessageContainer">
     				<i style="background-color: ${backgroundColor}" class="ChatPage--AvatarIcon">${message.sender[0]}</i>
-    				<span class="ChatPage--Username">${message.sender}</span>
-    				<p class="ChatPage--Message">${message.content}</p>
+					<div class="ChatPage--ContentContainer">
+						<div class="ChatPage--InnerContentContainer">
+	    					<span class="ChatPage--Username">${message.sender}</span>    				
+	    					<p class="ChatPage--Message">${message.content}</p>
+    					</div>
+    					<p class="ChatPage--MessageTime">${message.time}</p>
+					</div>
     			</li>`);
     }
     
     $('#messageArea')[0].scrollTop = $('#messageArea')[0].scrollHeight;
 }
 
+function getChatRooms(){
+	$(".roomList").empty();
+	roomList =[];
+	$.get("GetRooms",function(data){
+		console.log(data);
+		if(data !=null){
+			data.forEach(function(item){
+				roomList.push(item);
+				$(".roomList").append(`
+					<button class="btn btn-default" onclick="selectRoom(${item.id})">${item.topic}</button>
+				`);
+			});	
+		}
+	});
+}
+
+
+function addRoom(){
+	var topic = $(".topicInput").val();
+	$(".topicInput").val("");
+	$.ajax({
+		type:"POST",
+		url:"AddRoom",
+		data:{topic: topic},
+	}).then(function(){
+		$('#newRoomModal').modal('toggle');
+		getChatRooms();
+	});
+}
 
 function getAvatarColor(messageSender) {
     var hash = 0;
@@ -143,6 +202,17 @@ function getAvatarColor(messageSender) {
 
     var index = Math.abs(hash % colors.length);
     return colors[index];
+}
+
+function getRoomIndex(id){
+	var index =-1;
+	for(var i =0; i<roomList.length; i++){
+		if(roomList[i].id == id){
+			index = i;
+		}
+	}
+	console.log(roomList[index]);
+	return index;
 }
 
 $("#messageForm").bind("keypress", function(e) {

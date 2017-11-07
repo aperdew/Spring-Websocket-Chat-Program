@@ -30,9 +30,9 @@
 <!-- Room Selection Page -->
 	<div id="room-selection-page">
 		<div class="room-selection-page-container container">
+		<button class="btn btn-default" data-toggle="modal" data-target="#newRoomModal">add Room</button>
 			<div class="roomList">				
-				<button class="btn btn-default" onclick="selectRoom(1)">Room 1</button>
-				<button class="btn btn-default" onclick="selectRoom(2)">Room 2</button>
+				
 			</div>
 		</div>
 	
@@ -48,7 +48,7 @@
 	            <div class="panel-heading">
 	            	<div class="row">
 	            		<div class="col-sm-12">
-	            			<div class="text-center chat-header">Spring WebSocket Chat Demo</div>
+	            			<div class="text-center chat-header"></div>
 	            			<button class="backToRoomButton btn btn-default" onclick="backToRoomSelection()">
 			                	<span class="glyphicon glyphicon-circle-arrow-right"></span>
 			                </button>
@@ -78,9 +78,33 @@
     </div>
 <!-- End of Chat Page -->
 
+	<!-- Modal -->
+	<div id="newRoomModal" class="modal fade" role="dialog">
+	  <div class="modal-dialog">
+	
+	    <!-- Modal content-->
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	        <h4 class="modal-title">New Room</h4>
+	      </div>
+	      <div class="modal-body">
+      		<label >Topic:</label>
+	        <input type="text" class="topicInput" class="form-control"/>
+	      </div>
+	      <div class="modal-footer">
+	      	<button type="button" class="btn btn-default" onclick="addRoom()" >Submit</button>
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	
+	  </div>
+	</div>
+	
     <script src="/js/sockjs.min.js"></script>
     <script src="/js/stomp.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="/js/main.js"></script>
     
   </body>
