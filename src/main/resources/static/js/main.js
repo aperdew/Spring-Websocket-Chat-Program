@@ -1,4 +1,12 @@
 'use strict';
+$( document ).ready(function() {
+	window.emojiPicker = new EmojiPicker({
+		emojiable_selector: '[data-emojiable=true]',
+		assetsPath: '/images/img',
+		popupButtonClasses: 'fa fa-smile-o'
+		});
+		window.emojiPicker.discover();
+});
 
 var usernamePage = $('#username-page');
 var roomSelectionPage = $('#room-selection-page');
@@ -70,6 +78,7 @@ function backToRoomSelection(){
 	stompClient.disconnect();
 	messageArea.empty();
 	messageInput.val("");
+	$(".emoji-wysiwyg-editor").empty();
 	roomId=-1;
 	chatPage.hide();
 	roomSelectionPage.show()
@@ -123,6 +132,7 @@ function sendMessage(event) {
         };
         stompClient.send("/app/chat.sendMessage/"+roomId+"/"+currentRoomIndex, {}, JSON.stringify(chatMessage));
         messageInput.val("");
+        $(".emoji-wysiwyg-editor").empty();
     }
 }
 
@@ -173,7 +183,7 @@ function getChatRooms(){
 			data.forEach(function(item){
 				roomList.push(item);
 				$(".roomList").append(`
-					<button class="btn btn-default" onclick="selectRoom(${item.id})">${item.topic}</button>
+					<button class="roomButton btn btn-primary btn-lg btn-block" onclick="selectRoom(${item.id})">${item.topic}</button>
 				`);
 			});	
 		}
@@ -222,11 +232,15 @@ $("#messageForm").bind("keypress", function(e) {
 	   }
 });
 
-$("form").bind("keypress", function(e) {
+$(".emoji-wysiwyg-editor").keypress(function(e) {
 	   if (e.keyCode == 13) {
-	     return false;
+		   sendMessage();
+		   
 	   }
 });
+
+
+
 
 
 

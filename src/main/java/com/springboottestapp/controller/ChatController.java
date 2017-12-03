@@ -2,6 +2,7 @@ package com.springboottestapp.controller;
 
 import com.springboottestapp.model.ChatMessage;
 import com.springboottestapp.model.ChatRoom;
+import com.springboottestapp.sql.SQLStatements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class ChatController {
 	
 
 	private List<ChatRoom> listOfRooms = new ArrayList<ChatRoom>();
+	//private SQLStatements sql = new SQLStatements();
 
     @MessageMapping("/chat.sendMessage/{roomId}/{currentRoomIndex}")
     @SendTo("/channel/{roomId}")
@@ -39,26 +41,20 @@ public class ChatController {
     		@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
         // Add username in web socket session
         headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-        //addToMessageList(chatMessage, currentRoomIndex);
-        System.out.println("working");
+        addToMessageList(chatMessage, currentRoomIndex);
         return chatMessage;
     }
     
     @RequestMapping(value="/GetRooms",method=RequestMethod.GET)
     @ResponseBody
     public List<ChatRoom> getRooms(){
-    	/*ChatRoom room1 = new ChatRoom("Stacks");
-    	room1.setId(1);
-    	listOfRooms.add(room1);
-    	ChatRoom room2 = new ChatRoom("Queues");
-    	room2.setId(2);
-    	listOfRooms.add(room2);*/
     	return listOfRooms;
     }
     
     @RequestMapping(value="/AddRoom", method=RequestMethod.POST)
     @ResponseBody
     public void addRoom(@RequestParam String topic){
+    	//listOfRooms = sql.create(topic);
     	ChatRoom newChatRoom = new ChatRoom(topic);
     	newChatRoom.setId(listOfRooms.size());
     	listOfRooms.add(newChatRoom);

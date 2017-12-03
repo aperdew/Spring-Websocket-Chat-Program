@@ -4,6 +4,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
       <title>Spring Boot WebSocket Chat Application</title>
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet"/>
+  	  <link href="css/emoji.css" rel="stylesheet"/>
       <link rel="stylesheet" href="/css/main.css" />
   </head>
   <body>
@@ -30,9 +32,11 @@
 <!-- Room Selection Page -->
 	<div id="room-selection-page">
 		<div class="room-selection-page-container container">
-		<button class="btn btn-default" data-toggle="modal" data-target="#newRoomModal">add Room</button>
-			<div class="roomList">				
+			<button class="btn btn-default" data-toggle="modal" data-target="#newRoomModal">add Room</button>
+			<div class="roomList-Container scroll-bar">
+				<div class="roomList">				
 				
+				</div>
 			</div>
 		</div>
 	
@@ -47,9 +51,9 @@
         	<div class="chat-panel panel panel-default ">
 	            <div class="panel-heading">
 	            	<div class="row">
-	            		<div class="col-sm-12">
-	            			<div class="text-center chat-header"></div>
-	            			<button class="backToRoomButton btn btn-default" onclick="backToRoomSelection()">
+	            		<div class="col-sm-12 ">
+	            			<div class=" chat-header"></div>
+	            			<button class="backToRoomButton btn btn-primary" onclick="backToRoomSelection()">
 			                	<span class="glyphicon glyphicon-circle-arrow-right"></span>
 			                </button>
 	            		</div>
@@ -59,18 +63,21 @@
 		            <div class="connecting">
 		                Connecting...
 		            </div>
-		            <ul id="messageArea">
+		            <ul id="messageArea" class="scroll-bar">
 		
 		            </ul>
 	            </div>
 	            <div class="chat-panel-footer panel-footer">
 		            <div id="messageForm">
 		               <div class="input-group">
-		                   	<input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
-		                   	<span class="input-group-btn">
-		               			<button type="button" class="btn btn-primary" onclick="sendMessage()">Send</button>
+		                   	<input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="scroll-bar" data-emojiable="true" />
+		                   	<span class="input-group-btn chat-buttonGroup">
+		                   		<i class='btn btn-default emoji-picker-icon emoji-picker fa fa-smile-o '  data-type='picker'></i>
+		               			<button type="button" class="btn btn-primary chat-sendButton" onclick="sendMessage()">Send</button>			               				               			
 		         			</span>
-		               </div>
+		         			
+	         			</div>
+	         			
 		            </div>
 	            </div>
             </div>
@@ -90,7 +97,7 @@
 	      </div>
 	      <div class="modal-body">
       		<label >Topic:</label>
-	        <input type="text" class="topicInput" class="form-control"/>
+	        <input type="text" class="topicInput form-control" />
 	      </div>
 	      <div class="modal-footer">
 	      	<button type="button" class="btn btn-default" onclick="addRoom()" >Submit</button>
@@ -105,6 +112,10 @@
     <script src="/js/stomp.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/emoji-picker/config.js"></script>
+  	<script src="js/emoji-picker/util.js"></script>
+  	<script src="js/emoji-picker/jquery.emojiarea.js"></script>
+  	<script src="js/emoji-picker/emoji-picker.js"></script>
     <script src="/js/main.js"></script>
     
   </body>
