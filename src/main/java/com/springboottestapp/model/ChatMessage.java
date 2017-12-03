@@ -1,10 +1,10 @@
 package com.springboottestapp.model;
 
-
 public class ChatMessage {
     private MessageType type;
     private String content;
     private String sender;
+    private String time;
 
     public enum MessageType {
         CHAT,
@@ -34,5 +34,13 @@ public class ChatMessage {
 
     public void setSender(String sender) {
         this.sender = sender;
+    }
+    
+    public String getTime(){
+    	return time;
+    }
+    
+    public void setTime(String time){
+    	this.time = time;
     }
 }
